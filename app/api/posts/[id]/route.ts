@@ -75,7 +75,7 @@ export async function PUT(
 // DELETE /api/posts/:id
 export async function DELETE(
   _request: Request,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const {id } = await params
