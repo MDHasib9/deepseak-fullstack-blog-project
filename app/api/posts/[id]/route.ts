@@ -75,26 +75,29 @@ export async function PUT(
 // DELETE /api/posts/:id
 export async function DELETE(
   _request: Request,
-  { params }: { params: Promise<{ id: string }> },
+  { params }: { params: { id: string } },
 ) {
   try {
-    const { id } = await params;
-    const postId = parseInt(id, 10);
+    const postId = parseInt(params.id, 10);
+
     if (isNaN(postId)) {
       return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
     }
 
-    await prisma.post.delete({ where: { id: postId } });
+    await prisma.post.delete({
+      where: { id: postId },
+    });
 
     return NextResponse.json({ success: true });
   } catch (error: any) {
     if (error.code === "P2025") {
       return NextResponse.json({ error: "Post not found" }, { status: 404 });
     }
+
     console.error("Failed to delete post:", error);
     return NextResponse.json(
       { error: "Failed to delete post" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }
