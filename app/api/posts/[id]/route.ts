@@ -78,7 +78,8 @@ export async function DELETE(
   { params }: { params: { id: string } },
 ) {
   try {
-    const postId = parseInt(params.id, 10);
+    const {id } = await params
+    const postId = parseInt(id, 10);
 
     if (isNaN(postId)) {
       return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
