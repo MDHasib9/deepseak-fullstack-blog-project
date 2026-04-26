@@ -4,15 +4,16 @@ import { prisma } from "@/lib/prisma";
 // GET /api/posts/:id
 export async function GET(
   _request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
-    const id = parseInt(params.id, 10);
-    if (isNaN(id)) {
+    const { id } = await params;
+    const postId = parseInt(id, 10);
+    if (isNaN(postId)) {
       return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
     }
 
-    const post = await prisma.post.findUnique({ where: { id } });
+    const post = await prisma.post.findUnique({ where: { id: postId } });
     if (!post) {
       return NextResponse.json({ error: "Post not found" }, { status: 404 });
     }
@@ -21,7 +22,7 @@ export async function GET(
     console.error("Failed to fetch post:", error);
     return NextResponse.json(
       { error: "Failed to fetch post" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -29,11 +30,13 @@ export async function GET(
 // PUT /api/posts/:id
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
-    const id = parseInt(params.id, 10);
-    if (isNaN(id)) {
+    const { id } = await params;
+
+    const postId = parseInt(id, 10);
+    if (isNaN(postId)) {
       return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
     }
 
@@ -47,12 +50,12 @@ export async function PUT(
     if (Object.keys(data).length === 0) {
       return NextResponse.json(
         { error: "No valid fields to update" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     const post = await prisma.post.update({
-      where: { id },
+      where: { id: postId },
       data,
     });
 
@@ -64,7 +67,7 @@ export async function PUT(
     console.error("Failed to update post:", error);
     return NextResponse.json(
       { error: "Failed to update post" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -72,16 +75,16 @@ export async function PUT(
 // DELETE /api/posts/:id
 export async function DELETE(
   _request: Request,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
-    const {id} = await params
+    const { id } = await params;
     const postId = parseInt(id, 10);
     if (isNaN(postId)) {
       return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
     }
 
-    await prisma.post.delete({ where: {  id : postId } });
+    await prisma.post.delete({ where: { id: postId } });
 
     return NextResponse.json({ success: true });
   } catch (error: any) {
@@ -91,7 +94,7 @@ export async function DELETE(
     console.error("Failed to delete post:", error);
     return NextResponse.json(
       { error: "Failed to delete post" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
