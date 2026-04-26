@@ -2,7 +2,7 @@
 
 import { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import type { Post } from "@prisma/client";
+import type { Post } from "../generated/prisma/client";
 
 interface Props {
   initialPosts: Post[];
