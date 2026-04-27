@@ -8,7 +8,7 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
-    const postId = parseInt(id, 10);
+    const postId = Number(id);
     if (isNaN(postId)) {
       return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
     }
@@ -35,7 +35,7 @@ export async function PUT(
   try {
     const { id } = await params;
 
-    const postId = parseInt(id, 10);
+    const postId = Number(id);
     if (isNaN(postId)) {
       return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
     }
@@ -79,7 +79,7 @@ export async function DELETE(
 ) {
   try {
     const {id } = await params
-    const postId = parseInt(id, 10);
+    const postId = Number(id);
 
     if (isNaN(postId)) {
       return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
